@@ -16,6 +16,10 @@ REPO = pathlib.Path(r"C:\Users\tahaf\Project_y\repos\py-gtm")
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "pipelines" / "accountancy-firms"))
 sys.path.insert(0, str(REPO / "pipelines" / "accountancy-firms" / "profile"))
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")    # Windows console can't encode some names (e.g. ő)
+except Exception:
+    pass
 
 from core.config import key                                       # noqa: E402
 from crawl_sites import crawl_one                                 # noqa: E402
