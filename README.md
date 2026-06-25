@@ -40,3 +40,9 @@ Then upload the Apollo-ready CSV to Apollo to fill email / LinkedIn / phone / co
 - Verification is best-effort: rows are flagged `UNVERIFIED` (no confident site match) or carry notes
   like "no named DM on site" — eyeball flagged rows before outreach.
 - Free-tier limits: Google Places ~1000 calls/mo, Brave ~2000/mo; OpenAI is pay-as-you-go (cents/firm).
+
+## Apollo enrichment (decision-maker contacts by domain)
+- **`apollo_enrich.py <csv>`** — for firms WITH a domain: Apollo People Search by domain + title -> reveal email (no phone, no waterfall). Appends to `apollo-found-people.csv`.
+- **`apollo_enrich_byname.py`** — for firms with NO domain: find the company in Apollo by name -> get domain -> find a person.
+- **Headcount filter:** both enforce an ICP size window via `SIZE_MIN`/`SIZE_MAX` at the top of the file (default **10-300** employees), passed to Apollo as `organization_num_employees_ranges`. Change those two numbers to adjust. NOTE: headcount only exists at the Apollo stage (Companies House + website crawl don't expose it), so size qualification lives here, not in `enrich.py`.
+- Key: `APOLLO_USER_API_KEY` in `~/.config/projecty/keys.env`. Endpoints: `mixed_people/api_search` + `people/match`.
