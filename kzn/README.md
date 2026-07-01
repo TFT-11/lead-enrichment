@@ -1,5 +1,11 @@
 # KZN / South Africa lead enrichment
 
+> ⚠️ **These scripts SKIP the qualify/grade (size) stage.** They only worked for KZN because those firms
+> were *already* graded `in_icp` by Dean. On NEW, never-assessed firms they apply **no size/fit filter**.
+> For fresh leads (any SA province OR the UK) use **`../sa-graded/`** instead — it runs Dean's full
+> profile → `select.py` RUBRIC grade (size ~5-200) → people. Keep this folder only for re-running
+> already-graded sets. See `../sa-graded/README.md`.
+
 The South African counterpart to the UK tooling in the repo root — extending Dean's `py-gtm` accountancy-firm
 campaign to a new area (**KwaZulu-Natal / Durban**), reusing the same crawl + extract engine.
 

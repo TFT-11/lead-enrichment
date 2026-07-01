@@ -40,8 +40,30 @@ C:\Python314\python.exe enrich_new_sa_batch.py cand.csv out_master.csv ZA 1 100
 Then run the **mandatory** web-verification pass on the output before shipping (cross-check every
 decision-maker vs the firm site + independent sources; drop wrong-entity/wrong-vertical/geo-fails).
 
+## Run (UK — same grade engine, source = Companies House)
+UK firms come from Companies House (no website on file → Places resolves it). `select_new_uk_candidates.py`
+pulls + **ingests them into the store** so Dean's grade can read them, then the SAME `enrich_new_sa_batch.py`
+runs with `REGION=UK`:
+```bat
+set PYTHONIOENCODING=utf-8
+set OPENAI_PROFILE=1
+C:\Python314\python.exe select_new_uk_candidates.py cand_uk.csv 100 uk_exclude.json 5
+C:\Python314\python.exe enrich_new_sa_batch.py cand_uk.csv out_uk.csv UK 1 100
+```
+So all locations use ONE engine; only the *selector* + `REGION` arg differ (SA→`select_new_sa_candidates.py`,
+UK→`select_new_uk_candidates.py`).
+
+**Two UK caveats (read before a big run):**
+1. Dean's grade RUBRIC is **SA-worded** (mentions Gauteng/WC, CA(SA)). It applies to UK — automatable-surface,
+   distribution, reachability and **size (~5-200)** all score — but the geo bonus won't trigger for UK. Ask for a
+   UK-geo rubric variant if you want UK place-names/ACA-ACCA tells (still Dean's logic).
+2. Raw Companies House pulls skew to **micro/solo firms**, which Dean's rubric (correctly) grades low
+   (`wrong_icp_now`), so UK `in_icp` yield is lower than SA. Pull more pages and/or larger firms. Also, with no
+   website on file, Places sometimes resolves the wrong firm's site — the entity guard flags those.
+
 ## Cost
-OpenAI `gpt-5.4-mini` only, ~$0.04–0.05/firm (~$5 per 100). Google Places free tier. No Apollo/Hunter.
+OpenAI `gpt-5.4-mini` only, ~$0.04–0.05/firm (~$5 per 100). Google Places free tier (UK uses ~1 Places call
+per firm since CH has no websites — stay under the 1,000/mo free cap). No Apollo/Hunter.
 
 ## 2026-06-26 Gauteng + Western Cape run
 200 firms -> 96 graded-in, 51 verified decision-makers, 22 emails, 96 phones.
